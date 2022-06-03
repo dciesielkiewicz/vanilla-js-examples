@@ -1,24 +1,33 @@
-import { TodoService } from '../services/TodoService.js';
-import { TodoFormView } from '../views/TodoFormView.js';
-import { TodosView } from '../views/TodosView.js';
-
+import { TodoView } from '../views/TodoView.js';
 export class TodoController {
-  constructor() {
-    this.todoService = new TodoService();
-    this.todoFormView = new TodoFormView(this.addTodo);
-    this.todosView = new TodosView(this.deleteTodo, this.toggleTodo);
+  constructor(todo, deleteTodo, toggleTodo) {
+    this.todo = todo;
+    this.deleteTodo = deleteTodo;
+    this.toggleTodo = toggleTodo;
+    this.todoView = new TodoView(todo, this.onDelete, this.onToggle)
   }
 
-  addTodo = async (todoData) => {
-    const todo = await this.todoService.addTodo(todoData)
-    this.todosView.append(todo);
+  onDelete = async () => {
+    try {
+      if (!confirm(`Are you sure you want to delete todo: ${this.todo.title}?`)) return
+      await this.deleteTodo();
+      this.todoView.delete();
+    } catch {
+      alert('Something went wrong while delete todo')
+    }
   }
-  deleteTodo = (id) => this.todoService.deleteTodo(id);
-  toggleTodo = (id) => this.todoService.toggleTodo(id);
 
-  async run() {
-    await this.todoService.fetchAll();
-    this.todoFormView.render();
-    this.todosView.render(this.todoService.todos);
+  onToggle = async () => {
+    try {
+      await this.toggleTodo();
+      this.todoView.toggle(this.todo.completed);
+    } catch {
+      this.todoView.updateCheckbox(this.todo.completed);
+      alert('Something went wrong while toggling todo')
+    }
+  }
+
+  run({ container }) {
+    this.todoView.render({ container });
   }
 }
