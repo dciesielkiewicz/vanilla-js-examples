@@ -1,10 +1,10 @@
-class Todo {
-  constructor ({
-    title,
+export class Todo {
+  constructor({
     completed,
+    title,
   }) {
     this.id = Math.random().toString();
-    this.title = title;
     this.completed = completed;
+    this.title = title;
   }
 }
