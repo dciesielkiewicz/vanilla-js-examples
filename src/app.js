@@ -1,4 +1,5 @@
-import { TodoController } from './controllers/TodoController.js';
+import { TodosController } from './controllers/TodosController.js';
 
-const todoController = new TodoController();
-todoController.run()
+const app = document.getElementById('app');
+const todosController = new TodosController();
+todosController.run({ container: app })

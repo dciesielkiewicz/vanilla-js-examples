@@ -1,6 +1,6 @@
 export class TodoFormView {
-  constructor(addTodo) {
-    this.addTodo = addTodo;
+  constructor(submitHandler) {
+    this.submitHandler = submitHandler;
   }
 
   clearInput() {
@@ -10,18 +10,7 @@ export class TodoFormView {
   onSubmit = async (event) => {
     event.preventDefault();
     const title = this.input.value;
-    if (!title) {
-      return;
-    }
-    try {
-      await this.addTodo({
-        completed: false,
-        title
-      });
-      this.clearInput();
-    } catch {
-      alert('Something went wrong while adding todo')
-    }
+    this.submitHandler({ title });
   }
 
   getInput() {
@@ -38,12 +27,11 @@ export class TodoFormView {
     return this.submitButton;
   }
 
-  render() {
-    const app = document.getElementById('app');
+  render({ container }) {
     const form = document.createElement('form');
     form.classList.add('todo-form');
     form.onsubmit = this.onSubmit;
     form.append(this.getInput(), this.getSubmitButton())
-    app.append(form);
+    container.append(form);
   }
 }

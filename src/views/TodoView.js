@@ -1,39 +1,24 @@
 export class TodoView {
-  constructor(deleteTodo, toggleTodo) {
-    this.deleteTodo = deleteTodo;
-    this.toggleTodo = toggleTodo;
-  }
-
-  toggle () {
-    if (this.todo.completed) {
-      this.todoItem.classList.add('completed');
-      return;
-    }
-    this.todoItem.classList.remove('completed');
+  constructor(todo, onDelete, onToggle) {
+    this.todo = todo;
+    this.onDelete = onDelete;
+    this.onToggle = onToggle;
   }
 
   delete () {
     this.todoItem.remove();
   }
 
-  onToggle = async () => {
-    try {
-      await this.toggleTodo(this.todo.id);
-      this.toggle();
-    } catch {
-      alert('Something went wrong while toggling todo')
-      this.checkbox.checked = this.todo.completed
+  toggle (completed) {
+    if (completed) {
+      this.todoItem.classList.add('completed');
+      return;
     }
+    this.todoItem.classList.remove('completed');
   }
 
-  onDelete = async () => {
-    try {
-      if (!confirm(`Are you sure you want to delete todo: ${this.todo.title}?`)) return
-      await this.deleteTodo(this.todo.id);
-      this.delete();
-    } catch {
-      alert('Something went wrong while delete todo')
-    }
+  updateCheckbox (checked) {
+    this.checkbox.checked = checked;
   }
 
   getCheckbox() {
@@ -57,8 +42,7 @@ export class TodoView {
     return deleteButton;
   }
 
-  render ({ container, todo }) {
-    this.todo = todo;
+  render ({ container }) {
     this.todoItem = document.createElement('div');
     this.todoItem.classList.add('todo-item');
     if (this.todo.completed) this.todoItem.classList.add('completed');
